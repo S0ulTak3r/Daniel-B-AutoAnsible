@@ -1,0 +1,16 @@
+---
+- name: Gather EC2 Facts
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Get EC2 Instance Information
+      ec2_instance_info:
+        region: eu-north-1
+        filters:
+          "tag:enviornment": "*"
+      register: ec2_info
+
+    - name: Display Instance Information
+      debug:
+        msg: "Instance IP: {{ item.public_ip_address }}, Tags: {{ item.tags }}"
+      loop: "{{ ec2_info.instances }}"
