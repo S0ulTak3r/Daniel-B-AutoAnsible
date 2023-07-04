@@ -5,7 +5,7 @@ regions:
 
 keyed_groups:
   - prefix: environment
-    key: tags.enviornment
+    key: tags.servernumber
     separator: '_'
 
 hostnames:
