@@ -1,5 +1,5 @@
 - name: Install Flask and Run Flask project on Flask instances
-  hosts: environment_flask
+  hosts: all
   become: true
   vars:
     flask_port: 5000  # Define the Flask project port here

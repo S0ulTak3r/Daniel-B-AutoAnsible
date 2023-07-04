@@ -4,8 +4,8 @@ regions:
   - eu-north-1
 
 keyed_groups:
-  - prefix: environment
-    key: tags.servernumber
+  - prefix: Environment
+    key: tags.Environment
     separator: '_'
 
 hostnames:
