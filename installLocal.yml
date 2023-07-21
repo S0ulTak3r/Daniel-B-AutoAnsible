@@ -2,6 +2,11 @@
 - hosts: localhost
   gather_facts: no
   tasks:
+  - name: Update Pip
+    become: yes
+    pip:
+      name: pip
+      extra_args: --upgrade
   - name: Install necessary packages
     become: yes
     apt:
