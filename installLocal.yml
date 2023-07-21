@@ -11,6 +11,11 @@
     become: yes
     pip:
       name: jq
+  - name: Install jq apt
+    become: yes
+    apt:
+      name: jq
+      update_cache: yes
   - name: Install necessary packages
     become: yes
     apt:
