@@ -7,6 +7,10 @@
     pip:
       name: pip
       extra_args: --upgrade
+  - name: Install jq
+    become: yes
+    pip:
+      name: jq
   - name: Install necessary packages
     become: yes
     apt:
