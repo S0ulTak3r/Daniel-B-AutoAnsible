@@ -7,15 +7,18 @@
     pip:
       name: pip
       extra_args: --upgrade
+
   - name: Install jq
     become: yes
     pip:
       name: jq
+
   - name: Install jq apt
     become: yes
     apt:
       name: jq
       update_cache: yes
+
   - name: Install necessary packages
     become: yes
     apt:
@@ -25,3 +28,37 @@
       packages:
       - pkg-config
       - libmysqlclient-dev
+
+  - name: Get latest Terraform version
+    become: yes
+    shell: |
+      curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version'
+    register: latest_terraform_version
+
+  - name: Check if Terraform is installed
+    shell: "terraform version | head -n1 | cut -d'v' -f2"
+    register: current_terraform_version
+    ignore_errors: true
+
+  - name: Download Terraform
+    become: yes
+    get_url:
+      url: "https://releases.hashicorp.com/terraform/{{ latest_terraform_version.stdout }}/terraform_{{ latest_terraform_version.stdout }}_linux_amd64.zip"
+      dest: "/tmp/terraform.zip"
+    when: latest_terraform_version.stdout != current_terraform_version.stdout
+
+  - name: Install unzip if not present
+    become: yes
+    apt:
+      name: unzip
+      state: present
+    when: latest_terraform_version.stdout != current_terraform_version.stdout
+
+  - name: Unzip Terraform
+    become: yes
+    unarchive:
+      src: "/tmp/terraform.zip"
+      dest: "/usr/local/bin/"
+      remote_src: yes
+      mode: 0755
+    when: latest_terraform_version.stdout != current_terraform_version.stdout
