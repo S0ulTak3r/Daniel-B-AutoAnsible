@@ -62,3 +62,34 @@
       remote_src: yes
       mode: 0755
     when: latest_terraform_version.stdout != current_terraform_version.stdout
+
+
+  - name: Get the latest stable version of Helm
+    shell: curl -s https://api.github.com/repos/helm/helm/releases/latest | jq -r .tag_name
+    register: latest_helm_version
+    when: "'helm' not in ansible_facts.packages"
+
+
+  - name: Download Helm
+  get_url:
+    url: "https://get.helm.sh/helm-{{ latest_helm_version.stdout }}-linux-amd64.tar.gz"
+    dest: "/tmp/helm.tar.gz"
+  when: "'helm' not in ansible_facts.packages"
+
+
+
+- name: Extract Helm
+  unarchive:
+    src: "/tmp/helm.tar.gz"
+    dest: "/tmp/"
+    remote_src: yes
+  when: "'helm' not in ansible_facts.packages"
+
+- name: Move Helm binaries to /usr/local/bin
+  become: yes
+  command: mv /tmp/linux-amd64/helm /usr/local/bin/
+  when: "'helm' not in ansible_facts.packages"
+
+
+
+
